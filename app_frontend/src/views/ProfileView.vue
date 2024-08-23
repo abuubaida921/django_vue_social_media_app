@@ -1,9 +1,26 @@
 <template>
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
 
+        <!-- 8bca7029-3052-41c0-81cf-c15bbfc14ef5 -->
+        <!-- 4be451e7-0a5d-438d-a7db-d2d89dd41903 -->
+        <!-- Left Side Panel -->
+        <div class="main-left col-span-1">
+            <div class="p-4 bg-white border border-gray-200 text-center rounded-lg">
+                <img src="https://i.pravatar.cc/300?img=70" class="mb-6 rounded-full">
+
+                <p><strong>{{ user.name }}</strong></p>
+
+                <div class="mt-6 flex space-x-8 justify-around">
+                    <p class="text-xs text-gray-500">182 friends</p>
+                    <p class="text-xs text-gray-500">120 posts</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Middle Panel -->
-        <div class="main-center col-span-3 space-y-4">
-            <div class="bg-white border border-gray-200 rounded-lg">
+        <div class="main-center col-span-2 space-y-4">
+            <div class="bg-white border border-gray-200 rounded-lg"
+            v-if="userStore.user.id === user.id">
                 <form v-on:submit.prevent="submitForm" method="post">
                     <div class="p-4">
                         <textarea v-model="body" class="p-4 w-full bg-gray-100 rounded-lg"
@@ -80,8 +97,17 @@
 import axios from 'axios'
 import PeopleYouMayKnow from '../components/PeopleYouMayKnow.vue'
 import Trends from '../components/Trends.vue'
+import { useUserStore } from '@/stores/user'
+
 export default {
-    name: 'FeedView',
+    name: 'ProfileView',
+    setup() {
+        const userStore = useUserStore()
+
+        return {
+            userStore
+        }
+    },
     components: {
         PeopleYouMayKnow,
         Trends,
@@ -90,6 +116,7 @@ export default {
     data() {
         return {
             posts: [],
+            user:{},
             body: '',
         }
     },
@@ -101,11 +128,13 @@ export default {
     methods: {
         getFeed() {
             axios
-                .get('/api/posts/')
+                .get(`/api/posts/profile/${this.$route.params.id}/`)
                 .then(response => {
                     console.log('data', response.data)
 
-                    this.posts = response.data
+                    this.posts = response.data.posts
+                    this.user = response.data.user
+
                 })
                 .catch(error => {
                     console.log('error', error)
