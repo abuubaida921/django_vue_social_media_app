@@ -96,7 +96,7 @@ export const useUserStore = defineStore({
 
                     axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
                 })
-                .catch((error)=>{
+                .catch((error) => {
                     console.log(error)
 
                     this.removeToken()
