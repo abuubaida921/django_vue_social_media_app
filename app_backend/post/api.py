@@ -22,5 +22,9 @@ def post_create(request):
               post = form.save(commit=False)
               post.created_by = request.user
               post.save()
-
-        return JsonResponse({'hello':'hy'})
+              
+              serializer = PostSerializer(post)
+              
+              return JsonResponse(serializer.data, safe=False)
+        else:
+              return JsonResponse({'error':'Something wrong'})
