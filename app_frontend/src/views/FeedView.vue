@@ -29,8 +29,8 @@
                 </div>
             </div>
 
-            <div class="p-4 bg-white border border-gray-200 rounded-lg">
-                <div class="mb-6 flex items-center justify-between">
+            <!-- <div class="p-4 bg-white border border-gray-200 rounded-lg"> -->
+                <!-- <div class="mb-6 flex items-center justify-between">
                     <div class="flex items-center space-x-6">
                         <img src="https://i.pravatar.cc/300?img=70" class="w-[40px] rounded-full">
 
@@ -38,11 +38,17 @@
                     </div>
 
                     <p class="text-gray-600">18 minutes ago</p>
-                </div>
+                </div> -->
 
-                <img src="https://images.unsplash.com/photo-1661956602868-6ae368943878?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=2670&amp;q=80"
-                    class="w-full rounded-lg">
+                <!-- <img src="https://images.unsplash.com/photo-1661956602868-6ae368943878?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=2670&amp;q=80"
+                    class="w-full rounded-lg"> -->
 
+                    <!-- <div class="my-6 flex justify-between"
+                    v-for="post in posts"
+                    v-bind:key="post.id">
+                    Helllow test
+                </div> -->
+<!-- 
                 <div class="my-6 flex justify-between">
                     <div class="flex space-x-6">
                         <div class="flex items-center space-x-2">
@@ -76,23 +82,23 @@
                             </path>
                         </svg>
                     </div>
-                </div>
-            </div>
+                </div> -->
+            <!-- </div> -->
 
-            <div class="p-4 bg-white border border-gray-200 rounded-lg">
+            <div class="p-4 bg-white border border-gray-200 rounded-lg"
+                    v-for="post in posts"
+                    v-bind:key="post.id">
                 <div class="mb-6 flex items-center justify-between">
                     <div class="flex items-center space-x-6">
                         <img src="https://i.pravatar.cc/300?img=70" class="w-[40px] rounded-full">
 
-                        <p><strong>Code With Stein</strong></p>
+                        <p><strong>{{ post.created_by.name }}</strong></p>
                     </div>
 
-                    <p class="text-gray-600">28 minutes ago</p>
+                    <p class="text-gray-600">{{ post.created_at_formatted }} ago</p>
                 </div>
 
-                <p>
-                    This is just a random text post. This is just a random text post. This is just a random text post.
-                    This is just a random text post.
+                <p>{{ post.body }}
                 </p>
 
                 <div class="my-6 flex justify-between">
@@ -134,13 +140,14 @@
 
         <!-- Righ Side Panel -->
         <div class="main-right col-span-1 space-y-4">
-            <PeopleYouMayKnow/>
-            <Trends/>
+            <PeopleYouMayKnow />
+            <Trends />
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
 import PeopleYouMayKnow from '../components/PeopleYouMayKnow.vue'
 import Trends from '../components/Trends.vue'
 export default {
@@ -148,6 +155,35 @@ export default {
     components: {
         PeopleYouMayKnow,
         Trends,
+    },
+
+    data() {
+        return {
+            posts: [],
+        }
+    },
+
+    mounted() {
+        this.getFeed()
+    },
+
+    methods: {
+        getFeed() {
+            axios
+                .get('/api/posts/')
+                .then(response => {
+                    console.log('data', response.data)
+
+                    this.posts = response.data
+                })
+                .catch(error => {
+                    console.log('error', error)
+                })
+        },
+
+        deletePost(id) {
+            this.posts = this.posts.filter(post => post.id !== id)
+        },
     }
 }
 </script>
